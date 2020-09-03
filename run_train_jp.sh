@@ -13,9 +13,9 @@ CONF_FILE=${MODEL_DIR}/bert_config.json
 BASE_MODEL=${MODEL_DIR}/pytorch_model.bin
 VOCAB_FILE=${MODEL_DIR}/vocab.txt
 
-TRAIN_TSV=./data/masuda/train_10000.tsv
-SAVE_PATH=./results/masuda/net_trained_10000.pth
-LOG_FILE=./results/masuda/train_10000.log
+TRAIN_TSV=./data/masuda/train_2000.tsv
+SAVE_PATH=./results/masuda/net_trained_2000.pth
+LOG_FILE=./results/masuda/train_2000.log
 
 
 function run_once() {

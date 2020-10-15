@@ -25,7 +25,7 @@ function run_once() {
 function run_all() {
     for i in `seq 2000`
     do
-    poetry run python check_attention.py --batch_size ${BATCH_SIZE} --text_length ${TEXT_LENGTH} --index $i --save_html ./results/masuda/attention/att_2000_$i.html  ${MECAB_OPT}   ${CONF_FILE}  ${TRAINED_MODEL}  ${TSV_FILE}  ${VOCAB_FILE}
+    poetry run python check_attention.py --batch_size ${BATCH_SIZE} --text_length ${TEXT_LENGTH} --index $i --save_tsv ./results/masuda/attention/att_2000_$i  ${MECAB_OPT}   ${CONF_FILE}  ${TRAINED_MODEL}  ${TSV_FILE}  ${VOCAB_FILE}
     done
 }
 

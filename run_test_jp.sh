@@ -11,7 +11,7 @@ MODEL_DIR=./models/Japanese_L-12_H-768_A-12_E-30_BPE
 CONF_FILE=${MODEL_DIR}/bert_config.json
 VOCAB_FILE=${MODEL_DIR}/vocab.txt
 
-TRAINED_MODEL=./results/masuda/net_trained_10000.pth
+TRAINED_MODEL=./results/masuda/net_trained_2000.pth
 TEST_TSV=./data/masuda/test_3000.tsv
 
 

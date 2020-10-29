@@ -22,16 +22,9 @@ def get_target_files(target_lp="PP", target_dir="results/masuda/attention_2000",
     return target_files
 
 
-def plot(target_files):
-    file_contents = []
-    for target in target_files:
-        with open(target, 'r') as f:
-            lines = pd.read_table(target, names=('attention', 'word'))
-            file_contents.append(lines)
-    concat_df = pd.concat(file_contents)
-    filtered_df = concat_df.query('attention >= 0.9')
-    seaborn.catplot(x="word", data=filtered_df,
-                    kind="count", order=filtered_df['word'].value_counts().index)
+def plot(df):
+    seaborn.catplot(x="word", data=df,
+                    kind="count", order=df['word'].value_counts().iloc[:30].index)
     plt.show()
 
 
@@ -41,5 +34,14 @@ if __name__ == "__main__":
     target_files = get_target_files(
         args.target_lp, args.target_dir, args.target_attn_layer)
     print(f'{len(target_files)} files found.')
+    file_contents = []
+    for target in target_files:
+        with open(target, 'r') as f:
+            lines = pd.read_table(target, names=('attention', 'word'))
+            file_contents.append(lines)
+    # 読み込んだcsvを連結
+    concat_df = pd.concat(file_contents)
+    # attention高そうなやつだけ見る
+    filtered_df = concat_df.query('attention >= 0.9)
     print("2. plotting...")
-    plot(target_files)
+    plot(filtered_df)

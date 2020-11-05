@@ -133,6 +133,21 @@ def mk_high_attention_words_list(sentence, label, pred, normlized_weights, token
             writer = csv.writer(f, delimiter='\t')
             writer.writerows(a)
 
+    # ALL
+    for i in range(12):
+        attens += normlized_weights[0, i, 0, :]
+    all_attention = []
+    attens /= attens.max()
+    for word, attn in zip(sentence, attens):
+        # 単語が[SEP]の場合は文章が終わりなのでbreak
+        if tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0] == "[SEP]":
+            break
+        all_attention.append([attn.cpu().detach().clone().numpy(), tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0]])
+    filename = f'{tsv_path}/{label_str}{pred_str}_attn_all.tsv'
+    with open(filename, 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(a)
+
 def predict(net, inputs):
     outputs, attention_probs = net(
         inputs,

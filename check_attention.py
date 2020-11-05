@@ -250,7 +250,6 @@ def run_main():
     example = next(iter(dataloader))
     inputs = example.Text[0].to(device)  # 文章
     preds, attention_probs = predict(net, inputs)
-<<<<<<< HEAD
     if args.save_html is not None:
         print("3. generating HTML file.", flush=True)
         html = mk_html(example.Text[0][0], example.Label[0], preds[0], attention_probs, dataset_generator.tokenizer)
@@ -264,19 +263,6 @@ def run_main():
     else:
         print("no flag for saving file")
         
-=======
-
-    mk_high_attention_words_list(
-        args.index, batch, preds, attention_probs, field_set.tokenizer, args.save_tsv)
-    # html = mk_html(example.Text[0][0], example.Label[0], preds[0], attention_probs, dataset_generator.tokenizer)
-    # if args.save_html is not None:
-    #     with open(args.save_html, "w") as f:
-    #         f.write(html)
-    # else:
-    #     print(html)
-
-
->>>>>>> 2e25875035568f50964b9041b6fc2f473e37ef74
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")

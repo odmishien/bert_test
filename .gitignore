@@ -1,11 +1,4 @@
-<<<<<<< HEAD
 results/
 models/
 data/
 __pycache__/
-=======
-__pycache__
-results
-models
-data
->>>>>>> 2e25875035568f50964b9041b6fc2f473e37ef74

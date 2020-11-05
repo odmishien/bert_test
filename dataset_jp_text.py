@@ -8,12 +8,14 @@ from utils.bert import BertTokenizer, load_vocab
 
 class DataSetGenerator():
     def __init__(self, vocab_file, max_text_length=256, use_basic_form=False, mecab_dict=None):
-        self.tokenizer = BertTokenizer(vocab_file=vocab_file, do_lower_case=False, do_basic_tokenize=False)
+        self.tokenizer = BertTokenizer(
+            vocab_file=vocab_file, do_lower_case=False, do_basic_tokenize=False)
         if mecab_dict is not None:
             self.tagger = MeCab.Tagger("-d {}".format(mecab_dict))
         else:
             self.tagger = MeCab.Tagger("")
-        self.text_field, self.label_field = self._prepare(max_text_length, use_basic_form)
+        self.text_field, self.label_field = self._prepare(
+            max_text_length, use_basic_form)
         self.vocab, self.ids_to_tokens = self._load_vocab(vocab_file)
 
     def _prepare(self, max_text_length, use_basic_form):
@@ -35,9 +37,12 @@ class DataSetGenerator():
                     _word_list.append(".")
                 elif _features[0] == "記号" and _features[1] == "読点":
                     _word_list.append(",")
+                elif _features[0] == "記号":
+                    pass
                 else:
                     if use_basic_form:
-                        _word_list.append(_features[6] if 0 < len(_features[6]) else _token.surface)
+                        _word_list.append(_features[6] if 0 < len(
+                            _features[6]) else _token.surface)
                     else:
                         _word_list.append(_token.surface)
                 _token = _token.next
@@ -114,18 +119,24 @@ if __name__ == "__main__":
     import argparse
 
     def parse_arg():
-        parser = argparse.ArgumentParser(description="Test DataSet for BERT for Japanese Texts.")
+        parser = argparse.ArgumentParser(
+            description="Test DataSet for BERT for Japanese Texts.")
         parser.add_argument("--mecab_dict", type=str, help="MeCab dictionary.")
-        parser.add_argument("--batch_size", type=int, default=16, help="batch size.")
-        parser.add_argument("--text_length", type=int, default=256, help="the length of texts.")
-        parser.add_argument("--index", type=int, help="index of text to be shown.")
+        parser.add_argument("--batch_size", type=int,
+                            default=16, help="batch size.")
+        parser.add_argument("--text_length", type=int,
+                            default=256, help="the length of texts.")
+        parser.add_argument("--index", type=int,
+                            help="index of text to be shown.")
         parser.add_argument("tsv_file", type=str, nargs=1, help="a TSV file.")
-        parser.add_argument("vocab_file", type=str, nargs=1, help="a vocabulary file.")
+        parser.add_argument("vocab_file", type=str, nargs=1,
+                            help="a vocabulary file.")
         return parser.parse_args()
 
     args = parse_arg()
 
-    generator = DataSetGenerator(args.vocab_file[0], args.text_length, mecab_dict=args.mecab_dict)
+    generator = DataSetGenerator(
+        args.vocab_file[0], args.text_length, mecab_dict=args.mecab_dict)
 
     if args.index is not None:
         data_set = generator.loadTSV_at_index(args.tsv_file[0], args.index)

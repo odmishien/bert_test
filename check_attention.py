@@ -22,6 +22,7 @@ def parse_arg():
     parser.add_argument("--index", type=int, default=0,
                         help="index of the text to be predicted.")
     parser.add_argument("--save_html", type=str, help="output HTML file.")
+    parser.add_argument("--save_raw_attn", type=str, help="output raw attention TSV file.")
     #
     parser.add_argument("--IMDb", action="store_true",
                         help="specify this when using IMDb dataset.")
@@ -103,23 +104,17 @@ def mk_html(sentence, label, pred, normlized_weights, tokenizer):
 
     return html
 
-
-def mk_high_attention_words_list(index, batch, preds, normlized_weights, tokenizer, tsv_path):
-     # indexの結果を抽出
-    sentence = batch.Text[0][index]  # 文章
-    label = batch.Label[index]  # ラベル
-    pred = preds[index]  # 予測
-
+def mk_high_attention_words_list(sentence, label, pred, normlized_weights, tokenizer, tsv_path):
     # ラベルと予測結果を文字に置き換え
     if label == 0:
-        label_str = "Negative"
+        label_str = "N"
     else:
-        label_str = "Positive"
+        label_str = "P"
 
     if pred == 0:
-        pred_str = "Negative"
+        pred_str = "N"
     else:
-        pred_str = "Positive"
+        pred_str = "P"
 
     # Self-Attentionの重みを可視化。Multi-Headが12個なので、12種類のアテンションが存在
     for i in range(12):
@@ -128,27 +123,40 @@ def mk_high_attention_words_list(index, batch, preds, normlized_weights, tokeniz
         # indexのAttentionを抽出と規格化
         # 0単語目[CLS]の、i番目のMulti-Head Attentionを取り出す
         # indexはミニバッチの何個目のデータかをしめす
-        attens = normlized_weights[index, i, 0, :]
+        attens = normlized_weights[0, i, 0, :]
         attens /= attens.max()
 
         for word, attn in zip(sentence, attens):
             # 単語が[SEP]の場合は文章が終わりなのでbreak
             if tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0] == "[SEP]":
                 break
-            a.append([attn.cpu().detach().clone().numpy(
-            ), tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0]])
-        filename = f'{tsv_path}/attn_{i}.tsv'
+            a.append([attn.cpu().detach().clone().numpy(), tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0]])
+        filename = f'{tsv_path}/{label_str}{pred_str}_attn_{i}.tsv'
 
         if not os.path.exists(os.path.dirname(filename)):
             try:
                 os.makedirs(os.path.dirname(filename))
-            except OSError as exc:  # Guard against race condition
+            except OSError as exc: # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
         with open(filename, 'w') as f:
             writer = csv.writer(f, delimiter='\t')
             writer.writerows(a)
 
+    # ALL
+    for i in range(12):
+        attens += normlized_weights[0, i, 0, :]
+    all_attention = []
+    attens /= attens.max()
+    for word, attn in zip(sentence, attens):
+        # 単語が[SEP]の場合は文章が終わりなのでbreak
+        if tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0] == "[SEP]":
+            break
+        all_attention.append([attn.cpu().detach().clone().numpy(), tokenizer.convert_ids_to_tokens([word.numpy().tolist()])[0]])
+    filename = f'{tsv_path}/{label_str}{pred_str}_attn_all.tsv'
+    with open(filename, 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(a)
 
 def predict(net, inputs):
     outputs, attention_probs = net(
@@ -189,21 +197,22 @@ def run_main():
     net.to(device)
     print("done.", flush=True)
 
-    print("3. generating HTML file.", flush=True)
     example = next(iter(dataloader))
     inputs = example.Text[0].to(device)  # 文章
     preds, attention_probs = predict(net, inputs)
-
-    mk_high_attention_words_list(
-        args.index, batch, preds, attention_probs, field_set.tokenizer, args.save_tsv)
-    # html = mk_html(example.Text[0][0], example.Label[0], preds[0], attention_probs, dataset_generator.tokenizer)
-    # if args.save_html is not None:
-    #     with open(args.save_html, "w") as f:
-    #         f.write(html)
-    # else:
-    #     print(html)
-
-
+    if args.save_html is not None:
+        print("3. generating HTML file.", flush=True)
+        html = mk_html(example.Text[0][0], example.Label[0], preds[0], attention_probs, dataset_generator.tokenizer)
+        with open(args.save_html, "w") as f:
+            f.write(html)
+    
+    elif args.save_raw_attn is not None:
+        print("3. generating raw attention tsv file.", flush=True)
+        mk_high_attention_words_list(
+            example.Text[0][0], example.Label[0], preds[0], attention_probs, dataset_generator.tokenizer, args.save_raw_attn)
+    else:
+        print("no flag for saving file")
+        
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")

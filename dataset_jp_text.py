@@ -34,9 +34,9 @@ class DataSetGenerator():
             while _token:
                 _features = _token.feature.split(",")
                 if _features[0] == "記号" and _features[1] == "句点":
-                    _word_list.append(".")
+                    _word_list.append("。")
                 elif _features[0] == "記号" and _features[1] == "読点":
-                    _word_list.append(",")
+                    _word_list.append("、")
                 elif _features[0] == "記号":
                     pass
                 else:

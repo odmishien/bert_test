@@ -42,6 +42,6 @@ if __name__ == "__main__":
     # 読み込んだcsvを連結
     concat_df = pd.concat(file_contents)
     # attention高そうなやつだけ見る
-    filtered_df = concat_df.query('attention >= 0.9)
+    filtered_df = concat_df.query('attention >= 0.9')
     print("2. plotting...")
     plot(filtered_df)

@@ -20,9 +20,9 @@ def get_target_files(target_dir="results/masuda/attention_2000", target_attn_lay
     return target_files
 
 
-def plot(df, attn_mean_by_words_df):
+def plot(df):
     seaborn.barplot(data=df, x='word', y='attention',
-                    order=attn_mean_by_words_df['attn_mean'].iloc[:30].index)
+                    order=df['word'].value_counts().index[200:250])
     plt.show()
 
 
@@ -40,12 +40,13 @@ if __name__ == "__main__":
     # 読み込んだcsvを連結
     concat_df = pd.concat(file_contents)
     attn_mean_by_words_df = pd.DataFrame(
-        index=[], columns=['word', 'attn_mean'])
+        index=[], columns=['word', 'attn_mean', 'counts'])
     uniq_words = concat_df.word.unique()
+    value_counts = concat_df.word.value_counts()
     for w in uniq_words:
         df = concat_df.query(f'word == "{w}"')
-        record = pd.Series([w, df.mean()], index=attn_mean_by_words_df.columns)
-        attn_mean_by_words_df.append(record, ignore_index=True)
-
-    print("2. plotting...")
-    plot(concat_df, attn_mean_by_words_df)
+        record = pd.Series([w, df['attention'].mean(), value_counts.get(w)],
+                           index=attn_mean_by_words_df.columns)
+        attn_mean_by_words_df = attn_mean_by_words_df.append(
+            record, ignore_index=True)
+    attn_mean_by_words_df.to_csv("./attn_mean_by_words_df.csv")

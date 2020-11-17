@@ -10,6 +10,8 @@ def parse_arg():
     parser = argparse.ArgumentParser()
     parser.add_argument("--min_freq", type=str,
                         help="min_freq")
+    parser.add_argument("--target_lp", type=str,
+                        help="Target label and prediction pair.")
     return parser.parse_args()
 
 
@@ -21,6 +23,6 @@ def plot(df):
 
 if __name__ == "__main__":
     args = parse_arg()
-    df = pd.read_csv('./attn_mean_by_words_df.csv')
+    df = pd.read_csv(f'./results/attn_mean_by_words_{args.target_lp}.csv')
     df = df.query(f'counts > {args.min_freq}')
     plot(df)

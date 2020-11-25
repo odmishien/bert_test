@@ -11,15 +11,15 @@ def get_common_value(pos_words, nega_words):
     return list(intersection)
 
 
-def plot(df):
+def plot(df, title):
     seaborn.barplot(data=df, x='word', y='attn_mean',
-                    order=df.sort_values('attn_mean', ascending=False)['word'][:45])
+                    order=df.sort_values('attn_mean', ascending=False)['word'][:45]).set_title(title)
     plt.show()
 
 
 if __name__ == "__main__":
-    pos_df = pd.read_csv(f'./results/attn_mean_20201111_by_words_PP.csv')
-    nega_df = pd.read_csv(f'./results/attn_mean_20201111_by_words_NN.csv')
+    pos_df = pd.read_csv(f'attn_mean_20201128_by_words_PP_all.csv')
+    nega_df = pd.read_csv(f'attn_mean_20201128_by_words_NN_all.csv')
     pos_words = pos_df['word'].to_list()
     nega_words = nega_df['word'].to_list()
     common_words = get_common_value(pos_words, nega_words)
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         pos_common_df = pos_common_df.append(pos_se, ignore_index=True)
         nega_se = nega_df[nega_df['word'] == word]
         nega_common_df = nega_common_df.append(nega_se, ignore_index=True)
-    plot(pos_common_df)
-    plot(nega_common_df)
+    plot(pos_common_df, 'pos_common')
+    plot(nega_common_df, 'nega_common')

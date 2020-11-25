@@ -11,15 +11,15 @@ def get_unique_value(pos_words, nega_words):
     return list(intersection ^ set(pos_words)), list(intersection ^ set(nega_words))
 
 
-def plot(df):
+def plot(df, title):
     seaborn.barplot(data=df, x='word', y='attn_mean',
-                    order=df.sort_values('attn_mean', ascending=False)['word'][:45])
+                    order=df.sort_values('attn_mean', ascending=False)['word'][:45]).set_title(title)
     plt.show()
 
 
 if __name__ == "__main__":
-    pos_df = pd.read_csv(f'./results/attn_mean_20201111_by_words_PP.csv')
-    nega_df = pd.read_csv(f'./results/attn_mean_20201111_by_words_NN.csv')
+    pos_df = pd.read_csv(f'attn_mean_20201128_by_words_PP_all.csv')
+    nega_df = pd.read_csv(f'attn_mean_20201128_by_words_NN_all.csv')
     pos_words = pos_df['word'].to_list()
     nega_words = nega_df['word'].to_list()
     pu_words, nu_words = [], []
@@ -54,5 +54,5 @@ if __name__ == "__main__":
             nega_uniq_se, ignore_index=True)
     pos_uniq_df = pos_uniq_df.query('counts > 10')
     nega_uniq_df = nega_uniq_df.query('counts > 10')
-    plot(pos_uniq_df)
-    plot(nega_uniq_df)
+    plot(pos_uniq_df, 'pos_unique')
+    plot(nega_uniq_df, 'nega_unique')

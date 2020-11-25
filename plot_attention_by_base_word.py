@@ -4,14 +4,16 @@ import pandas as pd
 import seaborn
 import matplotlib.pyplot as plt
 import japanize_matplotlib
-import os
 
 
 def parse_arg():
     parser = argparse.ArgumentParser()
     parser.add_argument("--target_lp", type=str,
                         help="Target label and prediction pair.")
+    parser.add_argument("--base_word", type=str,
+                        help="base word")
     parser.add_argument("--target_dir", type=str, help="Target directory.")
+    parser.add_argument("--word", type=str, help="Word")
     parser.add_argument("--target_attn_layer", type=str,
                         help="Target Attention Layer.")
     return parser.parse_args()
@@ -39,18 +41,19 @@ if __name__ == "__main__":
     target_files = get_target_files(
         args.target_dir, args.target_attn_layer, args.target_lp)
     print(f'{len(target_files)} files found.')
+    print("2. check include base_word")
     file_contents = []
     for target in target_files:
         with open(target, 'r') as f:
             lines = pd.read_table(target, names=('attention', 'word'))
-            file_contents.append(lines)
+            try:
+                if float(lines[lines['word'] == args.base_word]['attention']) > 0.1:
+                    file_contents.append(lines)
+            except:
+                continue
     # 読み込んだcsvを連結
+    print(f'{len(file_contents)} files matched.')
     concat_df = pd.concat(file_contents)
-    # csvあれば読み込み/なければ作成
-    # if os.path.exists(f'./results/attn_mean_20201128_by_words_{args.target_lp}.csv'):
-    #     attn_mean_by_words_df = pd.read_csv(
-    #         f'./results/attn_mean_20201128_by_words_{args.target_lp}.csv')
-    # else:
     attn_mean_by_words_df = pd.DataFrame(
         index=[], columns=['word', 'attn_mean', 'counts'])
     uniq_words = concat_df.word.unique()
@@ -61,8 +64,9 @@ if __name__ == "__main__":
                            index=attn_mean_by_words_df.columns)
         attn_mean_by_words_df = attn_mean_by_words_df.append(
             record, ignore_index=True)
-    attn_mean_by_words_df.to_csv(
-        f'./attn_mean_20201128_by_words_{args.target_lp}_{args.target_attn_layer}.csv')
-    print("2. plot attentions")
-    plot(attn_mean_by_words_df.query('counts > 20'),
-         f'mean of attention ({args.target_lp})')
+    print("2. plotting")
+    plot_layer = args.target_attn_layer
+    if plot_layer != 'all':
+        plot_layer = int(plot_layer) + 1
+    plot(attn_mean_by_words_df.query('counts > 10'),
+         f'attn_mean_with_{args.base_word}(LP:{args.target_lp}/layer:{plot_layer})')

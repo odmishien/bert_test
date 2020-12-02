@@ -17,7 +17,7 @@ def parse_arg():
 
 def plot(df):
     seaborn.barplot(data=df, x='word', y='attn_mean',
-                    order=df.sort_values('attn_mean', ascending=False)['word'])
+                    order=df.sort_values('attn_mean', ascending=False)['word']).set_xticklabels(rotation=90)
     plt.show()
 
 

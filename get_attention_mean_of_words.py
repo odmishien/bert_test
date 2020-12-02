@@ -30,6 +30,7 @@ def get_target_files(target_dir, target_attn_layer, target_lp):
 def plot(df, title):
     seaborn.barplot(data=df, x='word', y='attn_mean',
                     order=df.sort_values('attn_mean', ascending=False)['word'][:50]).set_title(title)
+    plt.xticks(rotation=90)
     plt.show()
 
 

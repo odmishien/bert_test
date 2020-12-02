@@ -31,12 +31,13 @@ def get_target_files(target_dir, target_attn_layer, target_lp):
 
 def plot(df):
     G = nx.from_pandas_edgelist(df, edge_attr=True)
+    pos = nx.spring_layout(G, k=0.3)
+    edge_width = [d['weight'] for (u, v, d) in G.edges(data=True)]
     plt.figure(figsize=(10, 10))
-    nx.draw_networkx(G,
-                     node_shape="s",
+    nx.draw_networkx(G, pos,
                      node_color="c",
-                     node_size=500,
-                     edge_color="gray",
+                     edge_color='blue',
+                     width=edge_width,
                      font_family="IPAexGothic")
     plt.show()
 

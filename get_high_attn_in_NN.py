@@ -29,7 +29,7 @@ def plot(d):
     fig = plt.figure(figsize=(15, 12))
     plt.imshow(wordcloud)
     plt.axis("off")
-    fig.savefig('high_attn_in_PP.png')
+    fig.savefig('high_attn_in_NN.png')
 
 
 if __name__ == "__main__":

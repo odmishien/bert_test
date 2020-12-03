@@ -62,8 +62,6 @@ if __name__ == "__main__":
                            index=attn_mean_by_words_df.columns)
         attn_mean_by_words_df = attn_mean_by_words_df.append(
             record, ignore_index=True)
-    attn_mean_by_words_df.to_csv(
-        f'./attn_mean_20201128_by_words_{args.target_lp}_{args.target_attn_layer}.csv')
     print("2. plot attentions")
     plot(attn_mean_by_words_df.query('counts > 20'),
          f'mean of attention ({args.target_lp})')

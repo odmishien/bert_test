@@ -64,4 +64,4 @@ if __name__ == "__main__":
             record, ignore_index=True)
     print("2. plot attentions")
     plot(attn_mean_by_words_df.query('counts > 20'),
-         f'mean of attention ({args.target_lp})', f'mean_{args.target_attn_layer}_{args.target_lp}.png')
+         f'mean of attention ({args.target_lp})', f'results/attn_mean_png/mean_{args.target_attn_layer}_{args.target_lp}.png')

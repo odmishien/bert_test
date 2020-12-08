@@ -28,7 +28,7 @@ def get_target_files(target_dir, target_attn_layer, target_lp):
 
 
 def plot(df, title, path):
-    seaborn.set(rc={'figure.figsize': (200, 100)})
+    seaborn.set(rc={"font.size": 18, 'figure.figsize': (200, 100)})
     seaborn.barplot(data=df, x='word', y='attn_mean',
                     order=df.sort_values('attn_mean', ascending=False)['word'][:50]).set_title(title)
     plt.xticks(rotation=90)

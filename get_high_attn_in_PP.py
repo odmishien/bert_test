@@ -25,7 +25,8 @@ def get_target_files(target_dir, target_attn_layer):
 
 def plot(d):
     fpath = "./ipag.ttf"
-    wordcloud = WordCloud(font_path=fpath).generate_from_frequencies(d)
+    wordcloud = WordCloud(
+        font_path=fpath, background_color='white', colormap='Blues').generate_from_frequencies(d)
     fig = plt.figure(figsize=(15, 12))
     plt.imshow(wordcloud)
     plt.axis("off")

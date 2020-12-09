@@ -23,14 +23,14 @@ def get_target_files(target_dir, target_attn_layer):
     return PP_target_files, NN_target_files
 
 
-def plot(d):
+def plot(d, path):
     fpath = "./ipag.ttf"
     wordcloud = WordCloud(
         font_path=fpath, background_color='white', colormap='Blues').generate_from_frequencies(d)
     fig = plt.figure(figsize=(15, 12))
     plt.imshow(wordcloud)
     plt.axis("off")
-    fig.savefig('high_attn_in_PP.png')
+    fig.savefig(path)
 
 
 if __name__ == "__main__":
@@ -93,4 +93,5 @@ if __name__ == "__main__":
     for w in PP_high_words:
         wordcloud_dict[w['word']] = w['attn_mean']
     print('2.plotting...')
-    plot(wordcloud_dict)
+    plot(wordcloud_dict,
+         f'./results/wordcloud/high_attn_in_PP_{args.target_attn_layer}.png')

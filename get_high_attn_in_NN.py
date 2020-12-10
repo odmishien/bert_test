@@ -85,9 +85,9 @@ if __name__ == "__main__":
         if not PP_attn_mean_by_words_df[PP_attn_mean_by_words_df["word"] == row["word"]].empty:
             if PP_attn_mean_by_words_df[PP_attn_mean_by_words_df["word"] == row["word"]]["attn_mean"].iloc[-1] - row["attn_mean"] < -0.2:
                 NN_high_words.append(row)
-            else:
-                if row["attn_mean"] > 0.2:
-                    NN_high_words.append(row)
+        else:
+            if row["attn_mean"] > 0.2:
+                NN_high_words.append(row)
 
     wordcloud_dict = {}
     for w in NN_high_words:

@@ -1,7 +1,7 @@
 import argparse
 import glob
 import pandas as pd
-import seaborn
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import japanize_matplotlib
 import os
@@ -27,13 +27,14 @@ def get_target_files(target_dir, target_attn_layer, target_lp):
     return target_files
 
 
-def plot(df, title, path):
-    plt.rcParams["figure.figsize"] = (40, 20)
-    plt.rcParams["font.size"] = 18
-    seaborn.barplot(data=df, x='word', y='attn_mean',
-                    order=df.sort_values('attn_mean', ascending=False)['word'][:50]).set_title(title)
-    plt.xticks(rotation=90)
-    plt.savefig(path)
+def plot(d, path):
+    fpath = "./ipag.ttf"
+    wordcloud = WordCloud(
+        font_path=fpath, colormap='gist_ncar').generate_from_frequencies(d)
+    fig = plt.figure(figsize=(15, 12))
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    fig.savefig(path)
 
 
 if __name__ == "__main__":
@@ -65,5 +66,10 @@ if __name__ == "__main__":
         attn_mean_by_words_df = attn_mean_by_words_df.append(
             record, ignore_index=True)
     print("2. plot attentions")
-    plot(attn_mean_by_words_df.query('counts > 20'),
-         f'mean of attention ({args.target_lp})', f'results/attn_mean_png/mean_{args.target_attn_layer}_{args.target_lp}.png')
+    plot_df = attn_mean_by_words_df.query('counts > 20').sort_values(
+        'attn_mean', ascending=False)[:50]
+    wordcloud_dict = {}
+    for index, row in plot_df.iterrows():
+        wordcloud_dict[row['word']] = row['attn_mean']
+    plot(wordcloud_dict,
+         f'results/attn_mean_png/mean_{args.target_attn_layer}_{args.target_lp}.png')

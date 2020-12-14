@@ -29,17 +29,18 @@ def get_target_files(target_dir, target_attn_layer, target_lp):
     return target_files
 
 
-def plot(df):
+def plot(df, path):
     G = nx.from_pandas_edgelist(df, edge_attr=True)
     pos = nx.spring_layout(G, k=0.3)
     edge_width = [d['weight'] for (u, v, d) in G.edges(data=True)]
-    plt.figure(figsize=(10, 10))
+    fig = plt.figure(figsize=(20, 10))
     nx.draw_networkx(G, pos,
-                     node_color="c",
+                     node_color="w",
+                     alpha=0.6,
                      edge_color='blue',
                      width=edge_width,
                      font_family="IPAexGothic")
-    plt.show()
+    fig.savefig(path)
 
 
 if __name__ == "__main__":
@@ -92,4 +93,5 @@ if __name__ == "__main__":
             temp_plot_df = temp_plot_df.append(record, ignore_index=True)
     temp_plot_df = temp_plot_df.query('weight > 0.2')
     plot_df = pd.concat([plot_df, temp_plot_df])
-    plot(plot_df)
+    plot(
+        plot_df, f'results/network/network_{bw}_{args.target_attn_layer}_{args.target_lp}')

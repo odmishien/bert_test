@@ -72,4 +72,4 @@ if __name__ == "__main__":
     for index, row in plot_df.iterrows():
         wordcloud_dict[row['word']] = row['attn_mean']
     plot(wordcloud_dict,
-         f'results/attn_mean_png/mean_{args.target_attn_layer}_{args.target_lp}.png')
+         f'results/attn_mean_png/mean_{int(args.target_attn_layer) + 1}_{args.target_lp}.png')

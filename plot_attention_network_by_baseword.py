@@ -33,7 +33,7 @@ def plot(df, path):
     G = nx.from_pandas_edgelist(df, edge_attr=True)
     pos = nx.spring_layout(G, k=0.3)
     edge_width = [d['weight'] for (u, v, d) in G.edges(data=True)]
-    fig = plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(15, 10))
     nx.draw_networkx(G, pos,
                      node_color="w",
                      alpha=0.6,

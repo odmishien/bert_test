@@ -36,6 +36,7 @@ def plot(df, path):
     fig = plt.figure(figsize=(15, 10))
     nx.draw_networkx(G, pos,
                      node_color="w",
+                     font_size=16,
                      alpha=0.6,
                      edge_color='blue',
                      width=edge_width,

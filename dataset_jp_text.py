@@ -39,6 +39,8 @@ class DataSetGenerator():
                     _word_list.append("、")
                 elif _features[0] == "記号":
                     pass
+                elif _features[0] == "名詞":
+                    _word_list.append("名詞")
                 else:
                     if use_basic_form:
                         _word_list.append(_features[6] if 0 < len(
